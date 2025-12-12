@@ -20,4 +20,12 @@ sealed interface Token {
     data object Div : Token
 
     data object Mod : Token
+
+    data object Abs : Token
+
+    data object Min : Token
+
+    data object Max : Token
+
+    data object Comma : Token
 }

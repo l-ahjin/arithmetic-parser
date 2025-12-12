@@ -15,6 +15,11 @@ sealed interface Expression {
         val op: Operator,
         val operand: Expression,
     ) : Expression
+
+    data class Function(
+        val op: Operator,
+        val args: List<Expression>,
+    ) : Expression
 }
 
 enum class Operator {
@@ -23,4 +28,7 @@ enum class Operator {
     MULTIPLY,
     DIVIDE,
     MODULO,
+    ABS,
+    MIN,
+    MAX,
 }

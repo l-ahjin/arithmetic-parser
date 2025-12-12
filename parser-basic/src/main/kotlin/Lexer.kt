@@ -12,6 +12,9 @@ class Lexer(
             "times" to Token.Mul,
             "div" to Token.Div,
             "mod" to Token.Mod,
+            "abs" to Token.Abs,
+            "min" to Token.Min,
+            "max" to Token.Max,
         )
 
     fun nextToken(): Token {
@@ -58,6 +61,10 @@ class Lexer(
                 pos++
                 Token.Mod
             }
+            c == ',' -> {
+                pos++
+                Token.Comma
+            }
             else -> {
                 throw Exception(
                     """
@@ -89,6 +96,9 @@ class Lexer(
                 c in ",_" -> {
                     if (hasSeparator) break
                     hasSeparator = true
+                    if (c == ',' && !expression[pos + 1].isDigit()) {
+                        break
+                    }
                 }
                 else -> {
                     break

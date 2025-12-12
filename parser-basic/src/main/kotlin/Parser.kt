@@ -23,6 +23,7 @@ class Parser(
                 if (currentToken != Token.RParen) {
                     throw Exception()
                 }
+                consume()
                 return node
             }
             Token.Plus -> {
@@ -34,6 +35,35 @@ class Parser(
                 consume()
                 val operand = factor()
                 return Expression.UnaryOp(Operator.MINUS, operand)
+            }
+            Token.Abs, Token.Min, Token.Max -> {
+                val op =
+                    when (currentToken) {
+                        is Token.Abs -> Operator.ABS
+                        is Token.Min -> Operator.MIN
+                        is Token.Max -> Operator.MAX
+                        else -> throw Exception("Unreachable")
+                    }
+                consume()
+                if (currentToken != Token.LParen) {
+                    throw Exception("Expected '(' after function")
+                }
+                consume()
+
+                val args = mutableListOf<Expression>()
+                if (currentToken != Token.RParen) {
+                    args.add(expr())
+                    while (currentToken == Token.Comma) {
+                        consume()
+                        args.add(expr())
+                    }
+                }
+
+                if (currentToken != Token.RParen) {
+                    throw Exception("Expected ')' after arguments")
+                }
+                consume()
+                return Expression.Function(op, args)
             }
             else -> {
                 throw Exception("unexpected token $token")
