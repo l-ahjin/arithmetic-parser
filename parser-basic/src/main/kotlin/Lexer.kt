@@ -5,6 +5,15 @@ class Lexer(
 ) {
     private var pos = 0
 
+    private val keyword =
+        mapOf(
+            "plus" to Token.Plus,
+            "minus" to Token.Minus,
+            "times" to Token.Mul,
+            "div" to Token.Div,
+            "mod" to Token.Mod,
+        )
+
     fun nextToken(): Token {
         while (pos < expression.length && expression[pos].isWhitespace()) {
             pos++
@@ -17,6 +26,9 @@ class Lexer(
         return when {
             c.isDigit() -> {
                 readNumber()
+            }
+            c.isLetter() -> {
+                readKeyword()
             }
             c == '(' -> {
                 pos++
@@ -86,5 +98,22 @@ class Lexer(
         }
         val number = sb.toString().toDoubleOrNull() ?: throw Exception("Invalid number")
         return Token.Number(number)
+    }
+
+    private fun readKeyword(): Token {
+        val start = pos
+        val sb = StringBuilder()
+        while (pos < expression.length && expression[pos].isLetter()) {
+            sb.append(expression[pos])
+            pos++
+        }
+        val text = sb.toString().lowercase()
+        return keyword[text] ?: throw Exception(
+            """
+            Unexpected keyword '$text'
+            $expression
+            ${" ".repeat(start)}${"~".repeat(pos - start)}
+            """.trimIndent(),
+        )
     }
 }
