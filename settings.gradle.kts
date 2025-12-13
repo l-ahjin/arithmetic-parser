@@ -4,3 +4,4 @@ plugins {
 rootProject.name = "arithmetic-parser"
 
 include("parser-basic")
+include("parser-extensions")
